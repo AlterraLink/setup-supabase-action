@@ -1,0 +1,78 @@
+name: Test Action
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test-package-managers:
+    name: Test with ${{ matrix.pm }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pm: [npm, yarn, pnpm, bun]
+        include:
+          - pm: npm
+            install-cmd: npm ci
+          - pm: yarn
+            install-cmd: yarn install
+          - pm: pnpm
+            install-cmd: pnpm install
+          - pm: bun
+            install-cmd: bun install
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Create test package.json
+        run: |
+          echo '{"name":"test","version":"1.0.0"}' > package.json
+      
+      - name: Setup with ${{ matrix.pm }}
+        uses: ./
+        with:
+          package-manager: ${{ matrix.pm }}
+          install-dependencies: 'false'
+      
+      - name: Verify installations
+        run: |
+          node --version
+          ${{ matrix.pm }} --version
+          supabase --version
+
+  test-node-versions:
+    name: Test Node.js ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          node-version: ${{ matrix.node }}
+          install-dependencies: 'false'
+      - run: node --version
+
+  test-with-supabase:
+    name: Test full Supabase workflow
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup
+        uses: ./
+        with:
+          package-manager: pnpm
+          install-dependencies: 'false'
+      
+      - name: Initialize and test Supabase
+        run: |
+          supabase init
+          supabase start
+          supabase status
+          supabase stop

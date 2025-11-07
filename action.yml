@@ -1,0 +1,119 @@
+name: 'Setup Supabase'
+description: 'Sets up Node.js, your package manager of choice, and Supabase CLI with intelligent caching. Built on top of the official supabase/setup-cli action.'
+author: 'AlterraLink'
+
+branding:
+    icon: 'database'
+    color: 'green'
+
+inputs:
+    node-version:
+        description: 'Node.js version to use'
+        required: false
+        default: '20'
+    package-manager:
+        description: 'Package manager to use (npm, yarn, pnpm, or bun)'
+        required: false
+        default: 'npm'
+    package-manager-version:
+        description: 'Package manager version to use (only applies to pnpm, yarn, and bun)'
+        required: false
+        default: ''
+    supabase-version:
+        description: 'Supabase CLI version to use'
+        required: false
+        default: 'latest'
+    install-dependencies:
+        description: 'Whether to install dependencies'
+        required: false
+        default: 'true'
+    working-directory:
+        description: 'Working directory for package manager commands'
+        required: false
+        default: '.'
+
+outputs:
+    cache-hit:
+        description: 'Whether the dependency cache was hit'
+        value: ${{ steps.cache.outputs.cache-hit }}
+    package-manager:
+        description: 'The package manager that was configured'
+        value: ${{ inputs.package-manager }}
+
+runs:
+    using: 'composite'
+    steps:
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+              node-version: ${{ inputs.node-version }}
+
+        - name: Setup pnpm
+          if: inputs.package-manager == 'pnpm'
+          uses: pnpm/action-setup@v4
+          with:
+              version: ${{ inputs.package-manager-version || '10.15.0' }}
+
+        - name: Setup Yarn
+          if: inputs.package-manager == 'yarn'
+          shell: bash
+          run: |
+              if [ -n "${{ inputs.package-manager-version }}" ]; then
+                corepack enable
+                corepack prepare yarn@${{ inputs.package-manager-version }} --activate
+              else
+                npm install -g yarn
+              fi
+
+        - name: Setup Bun
+          if: inputs.package-manager == 'bun'
+          uses: oven-sh/setup-bun@v2
+          with:
+              bun-version: ${{ inputs.package-manager-version || 'latest' }}
+
+        - name: Get package manager cache directory
+          id: cache-dir
+          shell: bash
+          run: |
+              if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+                echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+                echo "key=pnpm-store" >> $GITHUB_OUTPUT
+              elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+                echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+                echo "key=yarn-cache" >> $GITHUB_OUTPUT
+              elif [ "${{ inputs.package-manager }}" = "bun" ]; then
+                echo "dir=$(bun pm cache)" >> $GITHUB_OUTPUT
+                echo "key=bun-cache" >> $GITHUB_OUTPUT
+              else
+                echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
+                echo "key=npm-cache" >> $GITHUB_OUTPUT
+              fi
+
+        - name: Setup dependency cache
+          id: cache
+          uses: actions/cache@v4
+          with:
+              path: ${{ steps.cache-dir.outputs.dir }}
+              key: ${{ runner.os }}-${{ steps.cache-dir.outputs.key }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml', '**/bun.lockb') }}
+              restore-keys: |
+                  ${{ runner.os }}-${{ steps.cache-dir.outputs.key }}-
+
+        - name: Install dependencies
+          if: inputs.install-dependencies == 'true'
+          shell: bash
+          working-directory: ${{ inputs.working-directory }}
+          run: |
+              if [ "${{ inputs.package-manager }}" = "pnpm" ]; then
+                pnpm install --frozen-lockfile
+              elif [ "${{ inputs.package-manager }}" = "yarn" ]; then
+                yarn install --frozen-lockfile
+              elif [ "${{ inputs.package-manager }}" = "bun" ]; then
+                bun install --frozen-lockfile
+              else
+                npm ci
+              fi
+
+        - name: Setup Supabase CLI
+          uses: supabase/setup-cli@v1
+          with:
+              version: ${{ inputs.supabase-version }}
