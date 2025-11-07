@@ -1,47 +1,47 @@
-name: 'Setup Supabase'
-description: 'Sets up Node.js, your package manager of choice, and Supabase CLI with intelligent caching. Built on top of the official supabase/setup-cli action.'
-author: 'AlterraLink'
+name: "Setup Supabase"
+description: "Complete Supabase dev environment with Node.js, package managers, and CLI. Built on official action."
+author: "AlterraLink"
 
 branding:
-    icon: 'database'
-    color: 'green'
+    icon: "database"
+    color: "green"
 
 inputs:
     node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         required: false
-        default: '20'
+        default: "20"
     package-manager:
-        description: 'Package manager to use (npm, yarn, pnpm, or bun)'
+        description: "Package manager to use (npm, yarn, pnpm, or bun)"
         required: false
-        default: 'npm'
+        default: "npm"
     package-manager-version:
-        description: 'Package manager version to use (only applies to pnpm, yarn, and bun)'
+        description: "Package manager version to use (only applies to pnpm, yarn, and bun)"
         required: false
-        default: ''
+        default: ""
     supabase-version:
-        description: 'Supabase CLI version to use'
+        description: "Supabase CLI version to use"
         required: false
-        default: 'latest'
+        default: "latest"
     install-dependencies:
-        description: 'Whether to install dependencies'
+        description: "Whether to install dependencies"
         required: false
-        default: 'true'
+        default: "true"
     working-directory:
-        description: 'Working directory for package manager commands'
+        description: "Working directory for package manager commands"
         required: false
-        default: '.'
+        default: "."
 
 outputs:
     cache-hit:
-        description: 'Whether the dependency cache was hit'
+        description: "Whether the dependency cache was hit"
         value: ${{ steps.cache.outputs.cache-hit }}
     package-manager:
-        description: 'The package manager that was configured'
+        description: "The package manager that was configured"
         value: ${{ inputs.package-manager }}
 
 runs:
-    using: 'composite'
+    using: "composite"
     steps:
         - name: Setup Node.js
           uses: actions/setup-node@v4
