@@ -52,7 +52,7 @@ runs:
           if: inputs.package-manager == 'pnpm'
           uses: pnpm/action-setup@v4
           with:
-              version: ${{ inputs.package-manager-version || '10.15.0' }}
+              version: ${{ inputs.package-manager-version || '10.32.1' }}
 
         - name: Setup Yarn
           if: inputs.package-manager == 'yarn'
