@@ -49,7 +49,7 @@ This action uses the official [`supabase/setup-cli`](https://github.com/supabase
 ```yaml
 - uses: actions/setup-node@v4
   with:
-      node-version: 20
+      node-version: 22
 - uses: pnpm/action-setup@v4
   with:
       version: 10.15.0
@@ -69,30 +69,30 @@ This action uses the official [`supabase/setup-cli`](https://github.com/supabase
 
 ## ✨ Features
 
--   🚀 **Complete Setup** - Node.js, package manager, dependencies, and Supabase CLI in one step
--   📦 **Multiple Package Managers** - Support for npm, yarn, pnpm, and bun
--   💾 **Intelligent Caching** - Automatic dependency caching for faster subsequent runs
--   ⚙️ **Highly Configurable** - Customize all versions and behaviors
--   🎯 **Flexible** - Optional dependency installation and working directory support
--   🔄 **Keep It DRY** - Define setup once, reuse across all workflows
--   ✅ **Battle-Tested** - Used in production workflows
--   🤝 **Official Foundation** - Built on top of the official Supabase CLI action
+- 🚀 **Complete Setup** - Node.js, package manager, dependencies, and Supabase CLI in one step
+- 📦 **Multiple Package Managers** - Support for npm, yarn, pnpm, and bun
+- 💾 **Intelligent Caching** - Automatic dependency caching for faster subsequent runs
+- ⚙️ **Highly Configurable** - Customize all versions and behaviors
+- 🎯 **Flexible** - Optional dependency installation and working directory support
+- 🔄 **Keep It DRY** - Define setup once, reuse across all workflows
+- ✅ **Battle-Tested** - Used in production workflows
+- 🤝 **Official Foundation** - Built on top of the official Supabase CLI action
 
 ## 🎯 When to Use This Action
 
 **Use this action when you want:**
 
--   ✅ Complete development environment setup in one step
--   ✅ Automatic dependency caching (saves 1-3 minutes per run)
--   ✅ Support for multiple package managers
--   ✅ Less boilerplate in your workflows (~85% reduction)
--   ✅ Consistent setup across all your Supabase workflows
+- ✅ Complete development environment setup in one step
+- ✅ Automatic dependency caching (saves 1-3 minutes per run)
+- ✅ Support for multiple package managers
+- ✅ Less boilerplate in your workflows (~85% reduction)
+- ✅ Consistent setup across all your Supabase workflows
 
 **Use the official `supabase/setup-cli` directly when you:**
 
--   Only need the Supabase CLI (no Node.js or dependencies)
--   Already have your own package manager setup
--   Want the minimal, official-only solution
+- Only need the Supabase CLI (no Node.js or dependencies)
+- Already have your own package manager setup
+- Want the minimal, official-only solution
 
 Most teams running Supabase workflows will benefit from this action's convenience and time savings!
 
@@ -185,12 +185,14 @@ jobs:
 
 | Input                     | Description                            | Required | Default  |
 | ------------------------- | -------------------------------------- | -------- | -------- |
-| `node-version`            | Node.js version to install             | No       | `20`     |
+| `node-version`            | Node.js version to install             | No       | `22`     |
 | `package-manager`         | Package manager (npm, yarn, pnpm, bun) | No       | `npm`    |
 | `package-manager-version` | Package manager version (not for npm)  | No       | `''`     |
 | `supabase-version`        | Supabase CLI version                   | No       | `latest` |
 | `install-dependencies`    | Whether to install dependencies        | No       | `true`   |
 | `working-directory`       | Working directory                      | No       | `.`      |
+
+> **Note:** The default Node.js version was bumped from `20` to `22` to support modern package manager versions (e.g. pnpm 11+, which requires Node ≥22.13). If you need an older Node version, pass `node-version` explicitly.
 
 ## 📤 Outputs
 
@@ -345,6 +347,10 @@ Yes! All `supabase/setup-cli` features are available through the `supabase-versi
 
 Yes! Since we use the official action internally, updates are automatic. We pin to `@v1` which gets the latest compatible version.
 
+### Which Node.js version is used by default?
+
+Node.js `22` (the current LTS). This default was chosen to support modern pnpm and yarn releases that require Node ≥22.13. To pin a different version, pass `node-version` explicitly.
+
 ## 📝 Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for a list of changes.
@@ -355,9 +361,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Support
 
--   📖 [Documentation](https://github.com/AlterraLink/setup-supabase-action)
--   🐛 [Issue Tracker](https://github.com/AlterraLink/setup-supabase-action/issues)
--   💡 [Discussions](https://github.com/AlterraLink/setup-supabase-action/discussions)
+- 📖 [Documentation](https://github.com/AlterraLink/setup-supabase-action)
+- 🐛 [Issue Tracker](https://github.com/AlterraLink/setup-supabase-action/issues)
+- 💡 [Discussions](https://github.com/AlterraLink/setup-supabase-action/discussions)
 
 ## ⭐ Show Your Support
 
