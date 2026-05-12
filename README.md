@@ -17,18 +17,18 @@ This action uses the official [`supabase/setup-cli`](https://github.com/supabase
 │  ┌────────────────────┐   ┌─────────────────────────┐  │
 │  │ Node.js Setup      │   │ Package Manager Setup   │  │
 │  │ (actions/setup-    │   │ (npm/yarn/pnpm/bun)     │  │
-│  │  node@v4)          │   │                         │  │
+│  │  node@v5)          │   │                         │  │
 │  └────────────────────┘   └─────────────────────────┘  │
 │                                                          │
 │  ┌────────────────────┐   ┌─────────────────────────┐  │
 │  │ Dependency Cache   │   │ Install Dependencies    │  │
-│  │ (actions/cache@v4) │   │ (npm ci/pnpm install/   │  │
+│  │ (actions/cache@v5) │   │ (npm ci/pnpm install/   │  │
 │  │                    │   │  yarn install/etc)      │  │
 │  └────────────────────┘   └─────────────────────────┘  │
 │                                                          │
 │  ┌──────────────────────────────────────────────────┐  │
 │  │ Official Supabase CLI                            │  │
-│  │ (supabase/setup-cli@v1) ✅                       │  │
+│  │ (supabase/setup-cli@v2) ✅                       │  │
 │  └──────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -47,14 +47,14 @@ This action uses the official [`supabase/setup-cli`](https://github.com/supabase
 **Before** (using just `supabase/setup-cli`):
 
 ```yaml
-- uses: actions/setup-node@v4
+- uses: actions/setup-node@v5
   with:
       node-version: 22
-- uses: pnpm/action-setup@v4
+- uses: pnpm/action-setup@v6
   with:
       version: 10.15.0
 - run: pnpm install --frozen-lockfile
-- uses: supabase/setup-cli@v1
+- uses: supabase/setup-cli@v2
 # ~15-30 lines of boilerplate
 ```
 
@@ -147,7 +147,7 @@ jobs:
     validate:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup Supabase
               uses: AlterraLink/setup-supabase-action@v1
@@ -290,7 +290,7 @@ jobs:
         name: Validate ${{ matrix.name }} database
 
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v5
 
             - name: Setup Supabase environment
               uses: AlterraLink/setup-supabase-action@v1
@@ -329,7 +329,7 @@ You don't need to! This action already includes the official Supabase CLI setup.
 ```yaml
 # ❌ Don't do this (redundant)
 - uses: AlterraLink/setup-supabase-action@v1
-- uses: supabase/setup-cli@v1 # Already included above!
+- uses: supabase/setup-cli@v2 # Already included above!
 
 # ✅ Do this instead
 - uses: AlterraLink/setup-supabase-action@v1
@@ -345,11 +345,15 @@ Yes! All `supabase/setup-cli` features are available through the `supabase-versi
 
 ### Will updates to the official action be available?
 
-Yes! Since we use the official action internally, updates are automatic. We pin to `@v1` which gets the latest compatible version.
+Yes! Since we use the official action internally, updates are automatic. We pin to `@v2` of `supabase/setup-cli`, which gets the latest compatible version.
 
 ### Which Node.js version is used by default?
 
 Node.js `22` (the current LTS). This default was chosen to support modern pnpm and yarn releases that require Node ≥22.13. To pin a different version, pass `node-version` explicitly.
+
+### Is this action compatible with the Node.js 24 runner deprecation?
+
+Yes. The action's internal dependencies (`actions/setup-node@v5`, `actions/cache@v5`, `pnpm/action-setup@v6`, `supabase/setup-cli@v2`) all run on the Node.js 24 runtime, so this action will continue to work after GitHub forces the Node 24 default on June 2nd, 2026. Consumers don't need to change anything — keep using `@v1`.
 
 ## 📝 Changelog
 
