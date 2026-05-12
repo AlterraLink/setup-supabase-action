@@ -10,7 +10,7 @@ inputs:
     node-version:
         description: "Node.js version to use"
         required: false
-        default: "20"
+        default: "22"
     package-manager:
         description: "Package manager to use (npm, yarn, pnpm, or bun)"
         required: false
@@ -94,7 +94,7 @@ runs:
           uses: actions/cache@v4
           with:
               path: ${{ steps.cache-dir.outputs.dir }}
-              key: ${{ runner.os }}-${{ steps.cache-dir.outputs.key }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml', '**/bun.lockb') }}
+              key: ${{ runner.os }}-${{ steps.cache-dir.outputs.key }}-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml', '**/bun.lock', '**/bun.lockb') }}
               restore-keys: |
                   ${{ runner.os }}-${{ steps.cache-dir.outputs.key }}-
 
