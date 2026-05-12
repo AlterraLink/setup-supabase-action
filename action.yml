@@ -43,10 +43,14 @@ outputs:
 runs:
     using: "composite"
     steps:
+        # Note: package-manager-cache: false is required here because v5 of
+        # setup-node auto-detects pnpm-lock.yaml and tries to invoke pnpm before
+        # pnpm is installed, which errors out. We do our own caching below.
         - name: Setup Node.js
           uses: actions/setup-node@v5
           with:
               node-version: ${{ inputs.node-version }}
+              package-manager-cache: false
 
         - name: Setup pnpm
           if: inputs.package-manager == 'pnpm'
